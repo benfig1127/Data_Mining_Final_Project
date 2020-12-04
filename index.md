@@ -11,6 +11,66 @@ Files:
 3. File Name
 - `file url`
 
+### Outputs
+```
+#Example Outputs:
+Example Recomendations for The Dark Knight Rises and the Avengers:
+
+
+0		The Dark Knight
+1		Batman Forever
+2		Batman Returns
+3		Batman
+4		Batman: The Dark Knight Returns, Part 2
+5		Batman Begins
+6		Slow Burn
+7		Batman v Superman: Dawn of Justice
+8		JFK
+9		Batman & Robin
+
+0               Avengers: Age of Ultron
+1		Plastic
+2		Timecop
+3		This Thing of Ours
+4		Thank You for Smoking
+5		The Corruptor
+6		Wall Street: Money Never Sleeps
+7		Team America: World Police
+8		The Fountain
+9		Snowpiercer
+
+```
+
+```
+
+Example Recomendations with new features added:
+
+
+0		The Dark Knight
+1		Batman Begins
+2		Amidst the Devil's Wings
+3		The Prestige
+4		Romeo Is Bleeding
+5		Black November
+6		Takers
+7		Faster
+8		Catwoman
+9               Gangster Squad
+
+
+0		Avengers: Age of Ultron
+1		Captain America: Civil War
+2		Iron Man 2
+3		Captain America: The First Avenger
+4		The Incredible Hulk
+5		Captain America: The Winter Soldier
+6		Iron Man 3
+7		X-Men: The Last Stand
+8		Iron Man
+9		Guardians of the Galaxy
+```
+### Code
+
 ```python
 # process command line arguments
 import argparse
@@ -256,63 +316,7 @@ print('\n')
 print('Loaded movie metada, computing setup for user recomendation system...')
 print('\n')
 ```
-```
-#Example Outputs:
-Example Recomendations for The Dark Knight Rises and the Avengers:
 
-
-65                              The Dark Knight
-299                              Batman Forever
-428                              Batman Returns
-1359                                     Batman
-3854    Batman: The Dark Knight Returns, Part 2
-119                               Batman Begins
-2507                                  Slow Burn
-9            Batman v Superman: Dawn of Justice
-1181                                        JFK
-210                              Batman & Robin
-
-7               Avengers: Age of Ultron
-3144                            Plastic
-1715                            Timecop
-4124                 This Thing of Ours
-3311              Thank You for Smoking
-3033                      The Corruptor
-588     Wall Street: Money Never Sleeps
-2136         Team America: World Police
-1468                       The Fountain
-1286                        Snowpiercer
-
-```
-
-```
-
-Example Recomendations with new features added:
-
-
-65               The Dark Knight
-119                Batman Begins
-4638    Amidst the Devil's Wings
-1196                The Prestige
-3073           Romeo Is Bleeding
-3326              Black November
-1503                      Takers
-1986                      Faster
-303                     Catwoman
-747               Gangster Squad
-
-
-7                  Avengers: Age of Ultron
-26              Captain America: Civil War
-79                              Iron Man 2
-169     Captain America: The First Avenger
-174                    The Incredible Hulk
-85     Captain America: The Winter Soldier
-31                              Iron Man 3
-33                   X-Men: The Last Stand
-68                                Iron Man
-94                 Guardians of the Galaxy
-```
 
 
 
