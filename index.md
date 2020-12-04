@@ -17,7 +17,7 @@ Files:
 Example Recomendations for The Dark Knight Rises and the Avengers:
 
 
-0		The Dark Knight
+		The Dark Knight
 1		Batman Forever
 2		Batman Returns
 3		Batman
@@ -28,7 +28,7 @@ Example Recomendations for The Dark Knight Rises and the Avengers:
 8		JFK
 9		Batman & Robin
 
-0               Avengers: Age of Ultron
+                Avengers: Age of Ultron
 1		Plastic
 2		Timecop
 3		This Thing of Ours
@@ -46,7 +46,7 @@ Example Recomendations for The Dark Knight Rises and the Avengers:
 Example Recomendations with new features added:
 
 
-0		The Dark Knight
+		The Dark Knight
 1		Batman Begins
 2		Amidst the Devil's Wings
 3		The Prestige
@@ -58,7 +58,7 @@ Example Recomendations with new features added:
 9               Gangster Squad
 
 
-0		Avengers: Age of Ultron
+		Avengers: Age of Ultron
 1		Captain America: Civil War
 2		Iron Man 2
 3		Captain America: The First Avenger
