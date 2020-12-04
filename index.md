@@ -351,3 +351,6 @@ print('\n')
 print('Loaded movie metada, computing setup for user recomendation system...')
 print('\n')
 ```
+
+###Conclusion
+This is a work-in-progress and we encourage all forms of feedback. Thank you for reading!
