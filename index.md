@@ -2,8 +2,77 @@
 
 ## Introduction
 
-## Datasets
+### Data
+Files:
+1. TMDB Movie Dataset
+- `https://www.kaggle.com/tmdb/tmdb-movie-metadata?select=tmdb_5000_credits.csv`
+2. The Movies Dataset
+- `https://www.kaggle.com/rounakbanik/the-movies-dataset?select=ratings.csv`
+3. The Netflix Prize Dataset
+- `https://www.kaggle.com/netflix-inc/netflix-prize-data`
+3. File Name
+- `file url`
 
+### Outputs
+```
+#Example Outputs:
+Example Recomendations for The Dark Knight Rises and the Avengers:
+
+
+		The Dark Knight
+1		Batman Forever
+2		Batman Returns
+3		Batman
+4		Batman: The Dark Knight Returns, Part 2
+5		Batman Begins
+6		Slow Burn
+7		Batman v Superman: Dawn of Justice
+8		JFK
+9		Batman & Robin
+
+                Avengers: Age of Ultron
+1		Plastic
+2		Timecop
+3		This Thing of Ours
+4		Thank You for Smoking
+5		The Corruptor
+6		Wall Street: Money Never Sleeps
+7		Team America: World Police
+8		The Fountain
+9		Snowpiercer
+
+```
+
+```
+
+Example Recomendations with new features added:
+
+
+		The Dark Knight
+1		Batman Begins
+2		Amidst the Devil's Wings
+3		The Prestige
+4		Romeo Is Bleeding
+5		Black November
+6		Takers
+7		Faster
+8		Catwoman
+9               Gangster Squad
+
+
+		Avengers: Age of Ultron
+1		Captain America: Civil War
+2		Iron Man 2
+3		Captain America: The First Avenger
+4		The Incredible Hulk
+5		Captain America: The Winter Soldier
+6		Iron Man 3
+7		X-Men: The Last Stand
+8		Iron Man
+9		Guardians of the Galaxy
+```
+
+### Code
 We used the following datasets:FILL IN
 
 
