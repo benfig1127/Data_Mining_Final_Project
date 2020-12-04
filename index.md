@@ -1,4 +1,4 @@
-# How to Build A Movie Recomendation System 
+# Building A Movie Recomendation System 
 
 
 
@@ -92,7 +92,7 @@ import pandas as pd
 import numpy as np 
 
 ```
-**Loading and reading our data:**
+Loading and reading our data:
 
 ```python
 print('\n')
@@ -107,8 +107,6 @@ if args.print_extra_shit:
 	print(df_credits.head(n=10))
 	print(df_movies.head(n=10))
 	print('\n')
-
-#merging the datasets, based of id
 
 df_credits.columns=['id','tittle','cast','crew']
 df_movies=df_movies.merge(df_credits,on='id')
@@ -145,7 +143,7 @@ if args.print_extra_shit:
 ```
 Next, we need to make sure to add another reference point besides just rating. As it stands, a movie with one favorable vote could appear ahead of a movie with hundreds of votes.
 
-The formula below will allow us to factor this in: it places weights on both the average rating given and the number of ratings given, ensuring that the movies on our list have been both widely watched and liked by those who did:
+The formula below will allow us to factor this in: it places weights on both the average rating given and the number of ratings given, ensuring that the movies on our list are both widely watched and liked by those who did:
 
 ```python
 
@@ -171,8 +169,9 @@ A little background: Term Frequency refers to the number of times a word appears
 q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
 
 q_movies = q_movies.sort_values('score', ascending=False)
-
-#Print the top 10 movies
+```
+Prints the top 10 movies
+```python
 if args.print_data_info:
 	print('Top 10 movies from new metric:')
 	print(q_movies[['title', 'vote_count', 'vote_average', 'score']].head(10))
@@ -185,10 +184,7 @@ if args.print_data_info:
 	print(pop[['title', 'vote_count', 'vote_average', 'popularity']].head(10))
 	print('\n')
 ```
-```python
-
-```
-We import scikit-learn, a machine learning library for Python, which has a TF-IDF class that can create the TF-IDF matrix for us:
+We import scikit-learn, a machine learning library for Python, that can create the TF-IDF matrix for us:
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -226,21 +222,17 @@ Now that we have done that, we can properly define our recommender function. Her
 
 ```python
 def get_recommendations(title, cosine_sim=cosine_sim):
-    # Get the index of the movie that matches the title
+
     idx = indices[title]
 
     sim_scores = list(enumerate(cosine_sim[idx]))
 
-    # Sort the movies based on similarity score
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-    # Get scores of the 10 most similar movies
     sim_scores = sim_scores[1:11]
 
-    # Get movie indices
     movie_indices = [i[0] for i in sim_scores]
 
-    # Return top 10 most similar movies
     return df_movies['title'].iloc[movie_indices]
 ```
 ```python
@@ -252,13 +244,11 @@ if args.print_data_info:
 	print(get_recommendations('The Avengers'))
 	print('\n')
 ```
-We have successfully created a recommender that can spit back similar movies to a given movie title based on the plot description. However, the accuracy of the recommender is not ideal. Feeding our recommender “The Dark Night Rises,” for example, resulted in a string of Batman Movies. We want a recommender that can recommend movies beyond a name association…
+We have successfully created a recommender that can spit back similar movies to a given movie title based on the plot description. However, the accuracy of the recommender is not ideal. Feeding our recommender “The Dark Night Rises,” for example, results in a string of Batman Movies. We want a recommender that can recommend movies beyond a simple name association…
 
 ## Cast-Crew Recommender
 
-```python
-```
-To increase the accuracy of our recommender, we will be analyzing individuals involved in the movie as well its genre. With regards to people, we will use: the director of the movie, the three top actors, and the genre. To be able to extract these datapoints, we will turn our data into a usable structure: 
+To increase the accuracy of our recommender, we will be analyzing individuals involved in the movie as well its genre. We will use the director of the movie and the three top actors. To extract these datapoints, we will turn our data into a usable structure: 
 ```python
 from ast import literal_eval
 
@@ -308,7 +298,6 @@ def clean_data(x):
     if isinstance(x, list):
         return [str.lower(i.replace(" ", "")) for i in x]
     else:
-        #Check if director exists. If not, return empty string
         if isinstance(x, str):
             return str.lower(x.replace(" ", ""))
         else:
@@ -328,7 +317,7 @@ def create_soup(x):
 df_movies['soup'] = df_movies.apply(create_soup, axis=1)
 
 ```
-The following steps are like how we constructed our Content-Based Filtering. The difference to note is that we utilize CountVectorizer as opposed to TF-IDF. The reason for this is that we do not want to negatively impact an actor’s presence in a film if they have acted in more movies. 
+These next steps are similar to how we constructed our Content-Based Filtering. The difference to note is that we utilize CountVectorizer as opposed to TF-IDF. The reason for this is that we do not want to negatively impact an actor’s presence in a film if they have acted in more movies than others. 
 ```python
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -362,47 +351,3 @@ print('\n')
 print('Loaded movie metada, computing setup for user recomendation system...')
 print('\n')
 ```
-
-
-
-
-
-
-
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/benfig1127/Data_Mining_Final_Project/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/benfig1127/Data_Mining_Final_Project/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
