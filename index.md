@@ -125,7 +125,7 @@ Calculating the mean rating of all the movies in our dataset:
 C=df_movies['vote_average'].mean()
 
 ```
-To appear on our list, a specific movie title must have more votes than 90% of the movies on the dataset
+To appear on our list, a specific movie title must have more votes than 90% of the movies on the dataset:
 ```python
 m=df_movies['vote_count'].quantile(.9)
 ```
