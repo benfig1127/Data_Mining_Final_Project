@@ -2,7 +2,7 @@
 
 
 
-### Dataset Files
+## Dataset Files
 1. TMDB Movie Dataset
 - `https://www.kaggle.com/tmdb/tmdb-movie-metadata?select=tmdb_5000_credits.csv`
 2. The Movies Dataset
@@ -11,7 +11,7 @@
 - `https://www.kaggle.com/netflix-inc/netflix-prize-data`
 
 
-### Outputs
+## Outputs
 ```
 #Example Outputs:
 Example Recomendations for The Dark Knight Rises and the Avengers:
@@ -70,7 +70,7 @@ Example Recomendations with new features added:
 9		Guardians of the Galaxy
 ```
 
-### Code
+## Code
 ```python
 import argparse
 parser = argparse.ArgumentParser()
@@ -157,7 +157,7 @@ def weighted_rating(x, m=m, C=C):
 
 So far, we have created a simple recommender that takes in two factors, weighted according to our preference, and returns an ordered list. Now we will add other factors to make our recommender much more powerful.
 
-## Content-Based Filtering
+### Content-Based Filtering
 
 One thing we can analyze is the plot overview. If we can extract certain key words from the overview, we can match them up with other movies with similar key words.
 
@@ -246,7 +246,7 @@ if args.print_data_info:
 ```
 We have successfully created a recommender that can spit back similar movies to a given movie title based on the plot description. However, the accuracy of the recommender is not ideal. Feeding our recommender “The Dark Night Rises,” for example, results in a string of Batman Movies. We want a recommender that can recommend movies beyond a simple name association…
 
-## Cast-Crew Recommender
+### Cast-Crew Recommender
 
 To increase the accuracy of our recommender, we will be analyzing individuals involved in the movie as well its genre. We will use the director of the movie and the three top actors. To extract these datapoints, we will turn our data into a usable structure: 
 ```python
@@ -352,5 +352,5 @@ print('Loaded movie metada, computing setup for user recomendation system...')
 print('\n')
 ```
 
-### Conclusion
+## Conclusion
 This is a work-in-progress and we encourage all forms of feedback. Thank you for reading!
