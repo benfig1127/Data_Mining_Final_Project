@@ -170,7 +170,7 @@ q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
 
 q_movies = q_movies.sort_values('score', ascending=False)
 ```
-Prints the top 10 movies
+Prints the top 10 movies:
 ```python
 if args.print_data_info:
 	print('Top 10 movies from new metric:')
