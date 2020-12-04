@@ -1,4 +1,4 @@
-# Data_Mining_Final_Project
+# Data Mining Final Project
 **Project Link**: https://benfig1127.github.io/Data_Mining_Final_Project/
 ### Data
 Files:
