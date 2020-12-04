@@ -1,17 +1,15 @@
 # How to Build A Movie Recomendation System 
 
-## Introduction
 
-### Data
-Files:
+
+### Dataset Files
 1. TMDB Movie Dataset
 - `https://www.kaggle.com/tmdb/tmdb-movie-metadata?select=tmdb_5000_credits.csv`
 2. The Movies Dataset
 - `https://www.kaggle.com/rounakbanik/the-movies-dataset?select=ratings.csv`
 3. The Netflix Prize Dataset
 - `https://www.kaggle.com/netflix-inc/netflix-prize-data`
-3. File Name
-- `file url`
+
 
 ### Outputs
 ```
@@ -73,12 +71,7 @@ Example Recomendations with new features added:
 ```
 
 ### Code
-We used the following datasets:FILL IN
-
-
-
 ```python
-# process command line arguments
 import argparse
 parser = argparse.ArgumentParser()
 
@@ -95,7 +88,6 @@ args = parser.parse_args()
 ```
 
 ```python
-#process and load data 
 import pandas as pd 
 import numpy as np 
 
@@ -110,20 +102,13 @@ print('\n')
 df_credits=pd.read_csv(args.data_path_1)
 df_movies=pd.read_csv(args.data_path_2)
 
-```
-
-**A glimpse of our data:**
-
-```python
-
 if args.print_extra_shit:
 	print('Raw Data:')
 	print(df_credits.head(n=10))
 	print(df_movies.head(n=10))
 	print('\n')
 
-
-#merging the datasets based off 'id' 
+#merging the datasets, based of id
 
 df_credits.columns=['id','tittle','cast','crew']
 df_movies=df_movies.merge(df_credits,on='id')
@@ -136,18 +121,16 @@ if args.print_extra_shit:
 	print(df_movies.head(5))
 	print('\n')
 ```
-**Calculating the mean rating of all the movies in our dataset:**
+Calculating the mean rating of all the movies in our dataset:
 ```python
-#initialize vars for imdb ranking system
 
 C=df_movies['vote_average'].mean()
 
 ```
-**To appear on our list, a specific movie title must have more votes than 90% of the movies on the dataset**
+To appear on our list, a specific movie title must have more votes than 90% of the movies on the dataset
 ```python
 m=df_movies['vote_count'].quantile(.9)
 ```
-**This shrinks our list:**
 ```python
 if args.print_extra_shit:
 	print('C:',C)
@@ -159,13 +142,10 @@ q_movies=df_movies.copy().loc[df_movies['vote_count'] >= m]
 if args.print_extra_shit:
 	print('q_movies.shape:',q_movies.shape)
 	print('\n')
-	
-#weighted rating function:
-
 ```
-**Next, we need to make sure to add another reference point besides just rating. As it stands, a movie with one favorable vote could appear ahead of a movie with hundreds of votes.**
+Next, we need to make sure to add another reference point besides just rating. As it stands, a movie with one favorable vote could appear ahead of a movie with hundreds of votes.
 
-**This formula will allow us to factor this in: it places weights on both the average rating given and the number of ratings given, ensuring that the movies on our list have been both widely watched and liked by those who did:**
+The formula below will allow us to factor this in: it places weights on both the average rating given and the number of ratings given, ensuring that the movies on our list have been both widely watched and liked by those who did:
 
 ```python
 
@@ -176,33 +156,28 @@ def weighted_rating(x, m=m, C=C):
     return (v/(v+m) * R) + (m/(m+v) * C)
 
 ```
-**Here are our top ten movies in our updated list. It includes the Title, the number of votes given (vote_count), the average rating (Vote Average), and the corresponding Weighted Score (score):**
 
-**So far, we have created a simple recommender that takes in two factors, weighted according to our preference, and returns an ordered list. Now we will add other factors to make our recommender much more powerful.**
+So far, we have created a simple recommender that takes in two factors, weighted according to our preference, and returns an ordered list. Now we will add other factors to make our recommender much more powerful.
 
 ## Content-Based Filtering
 
-**One thing we can analyze is the plot overview. If we can extract certain key words from the overview, we can match them up with other movies with similar key words.**
+One thing we can analyze is the plot overview. If we can extract certain key words from the overview, we can match them up with other movies with similar key words.
 
-**To do this, we will calculate Term Frequency-Inverse Document Frequency (TF-IDF) vectors for each plot description.**
+To do this, we will calculate Term Frequency-Inverse Document Frequency (TF-IDF) vectors for each plot description.
 
 A little background: Term Frequency refers to the number of times a word appears in a document. Inverse Document Frequency is the “relative” count of documents that contain the specific word and is defined as follows: log (# of documents/documents with specific term).
 
 ```python
-
-# Define a new feature 'score' and calculate its value with `weighted_rating()`
 q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
 
-#Sort movies based on score calculated above
 q_movies = q_movies.sort_values('score', ascending=False)
 
-#Print the top 15 movies
+#Print the top 10 movies
 if args.print_data_info:
 	print('Top 10 movies from new metric:')
 	print(q_movies[['title', 'vote_count', 'vote_average', 'score']].head(10))
 	print('\n')
 
-#show current popular movies
 pop= df_movies.sort_values('popularity', ascending=False)
 
 if args.print_data_info:
@@ -211,55 +186,64 @@ if args.print_data_info:
 	print('\n')
 ```
 ```python
-# Build a term frequency inverse document frequency feature 
 
-#Import TfIdfVectorizer from scikit-learn
+```
+We import scikit-learn, a machine learning library for Python, which has a TF-IDF class that can create the TF-IDF matrix for us:
+```python
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-#Define a TF-IDF Vectorizer Object. Remove all english stop words such as 'the', 'a'
+#Define a TF-IDF Vectorizer Object. Remove stop words such as 'the', 'a'
 tfidf = TfidfVectorizer(stop_words='english')
 
-#Replace NaN with an empty string
 df_movies['overview'] = df_movies['overview'].fillna('')
 
-#Construct the required TF-IDF matrix by fitting and transforming the data
 tfidf_matrix = tfidf.fit_transform(df_movies['overview'])
 
-#Output the shape of tfidf_matrix
 if args.print_extra_shit:
 	print('tfidf_matrix.shape:')
 	print(tfidf_matrix.shape)
 	print('\n')
-
-# Import linear_kernel
+```
+To describe the “similarity” between two movies, we will use the **cosine similarity score**. This can be calculated by taking the dot product of our TF-IDF vectorizer: 
+```python
 from sklearn.metrics.pairwise import linear_kernel
 
-# Compute the cosine similarity matrix
 cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+```
+We now want to define a function that, when given a movie title as input, will give us a list with 10 similar movies. To do this, we need a tool to locate the index of a movie in our metadata DataFrame, given the title: 
+```python
 
-#Construct a reverse map of indices and movie titles
 indices = pd.Series(df_movies.index, index=df_movies['title']).drop_duplicates()
 
-# Function that takes in movie title as input and outputs most similar movies
+```
+```python
+
+```
+Now that we have done that, we can properly define our recommender function. Here’s what we want: 
+- Find the index of the movie from its title 
+- Compute a list of cosine similarity scores for the given movie with all the movies in the dataset
+- Grab the top ten most “similar” movies 
+
+```python
 def get_recommendations(title, cosine_sim=cosine_sim):
     # Get the index of the movie that matches the title
     idx = indices[title]
 
-    # Get the pairwsie similarity scores of all movies with that movie
     sim_scores = list(enumerate(cosine_sim[idx]))
 
-    # Sort the movies based on the similarity scores
+    # Sort the movies based on similarity score
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-    # Get the scores of the 10 most similar movies
+    # Get scores of the 10 most similar movies
     sim_scores = sim_scores[1:11]
 
-    # Get the movie indices
+    # Get movie indices
     movie_indices = [i[0] for i in sim_scores]
 
-    # Return the top 10 most similar movies
+    # Return top 10 most similar movies
     return df_movies['title'].iloc[movie_indices]
-
+```
+```python
 if args.print_data_info:
 	print('Example Recomendations for The Dark Knight Rises and the Avengers:')
 	print('\n')
@@ -268,22 +252,31 @@ if args.print_data_info:
 	print(get_recommendations('The Avengers'))
 	print('\n')
 ```
+We have successfully created a recommender that can spit back similar movies to a given movie title based on the plot description. However, the accuracy of the recommender is not ideal. Feeding our recommender “The Dark Night Rises,” for example, resulted in a string of Batman Movies. We want a recommender that can recommend movies beyond a name association…
+
+## Cast-Crew Recommender
+
 ```python
-# Parse the stringified features into their corresponding python objects
+```
+To increase the accuracy of our recommender, we will be analyzing individuals involved in the movie as well its genre. With regards to people, we will use: the director of the movie, the three top actors, and the genre. To be able to extract these datapoints, we will turn our data into a usable structure: 
+```python
 from ast import literal_eval
 
 features = ['cast', 'crew', 'keywords', 'genres']
 for feature in features:
     df_movies[feature] = df_movies[feature].apply(literal_eval)
-
-# Get the director's name from the crew feature. If director is not listed, return NaN
+    
+```
+We then write functions to extract the key information: 
+```python
 def get_director(x):
     for i in x:
         if i['job'] == 'Director':
             return i['name']
     return np.nan
+```
 
-# Returns the list top 3 elements or entire list; whichever is more.
+```python
 def get_list(x):
     if isinstance(x, list):
         names = [i['name'] for i in x]
@@ -292,25 +285,25 @@ def get_list(x):
             names = names[:3]
         return names
 
-    #Return empty list in case of missing/malformed data
     return []
-
-# Define new director, cast, genres and keywords features that are in a suitable form.
+```
+```python
 df_movies['director'] = df_movies['crew'].apply(get_director)
 features = ['cast', 'keywords', 'genres']
 
 for feature in features:
     df_movies[feature] = df_movies[feature].apply(get_list)
+```
+Printing it all out:
+```python
 
-
-# Print the new features of the first 3 films
 if args.print_extra_shit:
 	print('new features of first 3 films:')
 	print(df_movies[['title', 'cast', 'director', 'keywords', 'genres']].head(3))
 	print('\n')
 ```
+To avoid the vectorizer confusing names, we turn all words to lowercase and remove all spaces: 
 ```python
-# Function to convert all strings to lower case and strip names of spaces
 def clean_data(x):
     if isinstance(x, list):
         return [str.lower(i.replace(" ", "")) for i in x]
@@ -320,32 +313,42 @@ def clean_data(x):
             return str.lower(x.replace(" ", ""))
         else:
             return ''
+```
+```python
 
-# Apply clean_data function to your features.
 features = ['cast', 'keywords', 'director', 'genres']
 
 for feature in features:
     df_movies[feature] = df_movies[feature].apply(clean_data)
-
+```
+We can now take all of the appropriate metadata  and “feed it” into our vectorizer: 
+```python
 def create_soup(x):
     return ' '.join(x['keywords']) + ' ' + ' '.join(x['cast']) + ' ' + x['director'] + ' ' + ' '.join(x['genres'])
 df_movies['soup'] = df_movies.apply(create_soup, axis=1)
 
-# Import CountVectorizer and create the count matrix
+```
+The following steps are like how we constructed our Content-Based Filtering. The difference to note is that we utilize CountVectorizer as opposed to TF-IDF. The reason for this is that we do not want to negatively impact an actor’s presence in a film if they have acted in more movies. 
+```python
+
 from sklearn.feature_extraction.text import CountVectorizer
 
 count = CountVectorizer(stop_words='english')
 count_matrix = count.fit_transform(df_movies['soup'])
+```
+```python
 
-
-# Compute the Cosine Similarity matrix based on the count_matrix
 from sklearn.metrics.pairwise import cosine_similarity
 
 cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
 
-# Reset index of our main DataFrame and construct reverse mapping as before
+```
+```python
+
 df_movies = df_movies.reset_index()
 indices = pd.Series(df_movies.index, index=df_movies['title'])
+```
+```python
 
 if args.print_data_info:
 	print('Example Recomendations with new features added:')
