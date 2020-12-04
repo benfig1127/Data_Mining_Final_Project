@@ -1,75 +1,12 @@
-### How to Build A Movie Recomendation System 
+# How to Build A Movie Recomendation System 
 
-### Data
-Files:
-1. TMDB Movie Dataset
-- `https://www.kaggle.com/tmdb/tmdb-movie-metadata?select=tmdb_5000_credits.csv`
-2. The Movies Dataset
-- `https://www.kaggle.com/rounakbanik/the-movies-dataset?select=ratings.csv`
-3. The Netflix Prize Dataset
-- `https://www.kaggle.com/netflix-inc/netflix-prize-data`
-3. File Name
-- `file url`
+## Introduction
 
-### Outputs
-```
-#Example Outputs:
-Example Recomendations for The Dark Knight Rises and the Avengers:
+## Datasets
+
+We used the following datasets:FILL IN
 
 
-		The Dark Knight
-1		Batman Forever
-2		Batman Returns
-3		Batman
-4		Batman: The Dark Knight Returns, Part 2
-5		Batman Begins
-6		Slow Burn
-7		Batman v Superman: Dawn of Justice
-8		JFK
-9		Batman & Robin
-
-                Avengers: Age of Ultron
-1		Plastic
-2		Timecop
-3		This Thing of Ours
-4		Thank You for Smoking
-5		The Corruptor
-6		Wall Street: Money Never Sleeps
-7		Team America: World Police
-8		The Fountain
-9		Snowpiercer
-
-```
-
-```
-
-Example Recomendations with new features added:
-
-
-		The Dark Knight
-1		Batman Begins
-2		Amidst the Devil's Wings
-3		The Prestige
-4		Romeo Is Bleeding
-5		Black November
-6		Takers
-7		Faster
-8		Catwoman
-9               Gangster Squad
-
-
-		Avengers: Age of Ultron
-1		Captain America: Civil War
-2		Iron Man 2
-3		Captain America: The First Avenger
-4		The Incredible Hulk
-5		Captain America: The Winter Soldier
-6		Iron Man 3
-7		X-Men: The Last Stand
-8		Iron Man
-9		Guardians of the Galaxy
-```
-### Code
 
 ```python
 # process command line arguments
@@ -80,7 +17,6 @@ parser.add_argument('--data_path_1', default='/home/bfigueroa20/data_mining/proj
 parser.add_argument('--data_path_2', default='/home/bfigueroa20/data_mining/project_work/archive/tmdb_5000_movies.csv')
 parser.add_argument('--data_path_3', default='/home/bfigueroa20/data_mining/project_work/movies_dataset/ratings_small.csv')
 
-
 parser.add_argument('--run_user1_test_case',action='store_true',default=False)
 parser.add_argument('--num_movies',type=int)
 
@@ -88,11 +24,16 @@ parser.add_argument('--print_extra_shit',action='store_true',default=False)
 parser.add_argument('--print_data_info',action='store_true',default=False)
 args = parser.parse_args()
 ```
+
 ```python
 #process and load data 
 import pandas as pd 
 import numpy as np 
 
+```
+**Loading and reading our data:**
+
+```python
 print('\n')
 print('Loading and computing movie metadata...')
 print('\n')
@@ -100,6 +41,11 @@ print('\n')
 df_credits=pd.read_csv(args.data_path_1)
 df_movies=pd.read_csv(args.data_path_2)
 
+```
+
+**A glimpse of our data:**
+
+```python
 
 if args.print_extra_shit:
 	print('Raw Data:')
@@ -121,12 +67,19 @@ if args.print_extra_shit:
 	print(df_movies.head(5))
 	print('\n')
 ```
+**Calculating the mean rating of all the movies in our dataset:**
 ```python
 #initialize vars for imdb ranking system
 
 C=df_movies['vote_average'].mean()
-m=df_movies['vote_count'].quantile(.9)
 
+```
+**To appear on our list, a specific movie title must have more votes than 90% of the movies on the dataset**
+```python
+m=df_movies['vote_count'].quantile(.9)
+```
+**This shrinks our list:**
+```python
 if args.print_extra_shit:
 	print('C:',C)
 	print('m:',m)
@@ -140,12 +93,33 @@ if args.print_extra_shit:
 	
 #weighted rating function:
 
+```
+**Next, we need to make sure to add another reference point besides just rating. As it stands, a movie with one favorable vote could appear ahead of a movie with hundreds of votes.**
+
+**This formula will allow us to factor this in: it places weights on both the average rating given and the number of ratings given, ensuring that the movies on our list have been both widely watched and liked by those who did:**
+
+```python
+
 def weighted_rating(x, m=m, C=C):
     v = x['vote_count']
     R = x['vote_average']
     # Calculation based on the IMDB formula
     return (v/(v+m) * R) + (m/(m+v) * C)
 
+```
+**Here are our top ten movies in our updated list. It includes the Title, the number of votes given (vote_count), the average rating (Vote Average), and the corresponding Weighted Score (score):**
+
+**So far, we have created a simple recommender that takes in two factors, weighted according to our preference, and returns an ordered list. Now we will add other factors to make our recommender much more powerful.**
+
+## Content-Based Filtering
+
+**One thing we can analyze is the plot overview. If we can extract certain key words from the overview, we can match them up with other movies with similar key words.**
+
+**To do this, we will calculate Term Frequency-Inverse Document Frequency (TF-IDF) vectors for each plot description.**
+
+A little background: Term Frequency refers to the number of times a word appears in a document. Inverse Document Frequency is the “relative” count of documents that contain the specific word and is defined as follows: log (# of documents/documents with specific term).
+
+```python
 
 # Define a new feature 'score' and calculate its value with `weighted_rating()`
 q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
