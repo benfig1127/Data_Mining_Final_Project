@@ -1,5 +1,7 @@
 # Building A Movie Recomendation System 
-
+Authors:
+1. Ben Figueroa 
+2. Matías Alvarado
 
 
 ## Dataset Files
@@ -353,4 +355,4 @@ print('\n')
 ```
 
 ## Conclusion
-This is a work-in-progress and we encourage all forms of feedback. Thank you for reading!
+This is a work-in-progress and we encourage all forms of feedback. Thank you for reading! A special thanks to our professor, Mike Izbicki for all the help and a wonderful class! [Link to His Info](https://izbicki.me/) 
